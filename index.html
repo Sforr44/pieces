@@ -50,6 +50,12 @@ background:radial-gradient(circle at 35% 30%,#fff3c4,#f2b632 55%,#b9780a);box-sh
 .foot button{font:inherit;background:none;border:0;color:var(--mut);text-decoration:underline;cursor:pointer}
 #toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:30px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:50;max-width:90vw;text-align:center}
 #toast.s{opacity:1}
+.tabs{flex-wrap:wrap}.tabs button{min-width:22%;font-size:.85rem;padding:8px 4px}
+.ach{display:flex;gap:12px;align-items:center;background:var(--bg);border:2px solid var(--line);border-radius:18px;padding:10px 12px;opacity:.5}.ach.ok{opacity:1;border-color:var(--ok)}.ach .e{font-size:1.7rem}
+.box{background:var(--bg);border:2px solid var(--line);border-radius:18px;padding:12px;color:var(--mut);font-size:.9rem}
+.code{display:flex;gap:8px}.code input{flex:1;font:inherit;padding:10px 12px;border-radius:14px;border:2px solid var(--line);background:var(--bg);color:var(--ink);text-transform:uppercase;min-width:0}.code button{font:inherit;font-weight:600;padding:10px 16px;border-radius:14px;border:0;background:var(--gold);color:#2a2418;cursor:pointer}
+.bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--ok)}
+#bst{color:var(--ok);font-weight:600}
 @media(prefers-reduced-motion:reduce){.fx,.bit,.rain,#gold{animation-duration:.01s}}
 </style>
 </head>
@@ -59,12 +65,13 @@ background:radial-gradient(circle at 35% 30%,#fff3c4,#f2b632 55%,#b9780a);box-sh
   <h1>Pièce d’or</h1>
   <div id="money">0</div>
   <div class="rates"><span id="pc">1</span> par clic · <span id="ps">0</span> par seconde</div>
+  <div id="bst" class="rates" hidden></div>
   <button id="coin" aria-label="Cliquer pour gagner des pièces">🪙</button>
   <div class="stats"><span>Clics : <b id="ck">0</b></span><span>Total gagné : <b id="tt">0</b></span><span>Pièces dorées : <b id="gc">0</b></span></div>
  </section>
  <section class="shop">
   <div class="tabs" role="tablist">
-   <button class="on" data-t="gen">Auto</button><button data-t="up">Boosts</button><button data-t="fx">Effets</button><button data-t="skin">Skins</button>
+   <button class="on" data-t="gen">Auto</button><button data-t="up">Boosts</button><button data-t="fx">Effets</button><button data-t="skin">Skins</button><button data-t="rb">Rebirth</button><button data-t="ach">Succès</button><button data-t="code">Codes</button>
   </div>
   <div id="list"></div>
   <div class="foot"><span id="save">Sauvegarde auto</span><button id="reset">Tout recommencer</button></div>
@@ -98,13 +105,19 @@ const FX=[
  {id:'f2',e:'🌧️',n:'Pluie de pièces',d:'Il pleut de l’argent en fond',p:700},
  {id:'f3',e:'✨',n:'Explosion d’étoiles',d:'Étoiles à chaque clic',p:2500},
  {id:'f4',e:'📳',n:'Secousse',d:'L’écran tremble un peu',p:1200},
- {id:'f5',e:'🔊',n:'Bruitages',d:'Un « ding » à chaque clic',p:400}
+ {id:'f5',e:'🔊',n:'Bruitages',d:'Un « ding » à chaque clic',p:400},
+ {id:'f6',e:'🔥',n:'Traînée de feu',d:'Des flammes jaillissent à chaque clic',p:5000},
+ {id:'f7',e:'❄️',n:'Neige',d:'Il neige doucement en fond',p:9000},
+ {id:'f8',e:'🌈',n:'Arc-en-ciel',d:'La pièce change de couleur à chaque clic',p:15000},
+ {id:'f11',e:'🌸',n:'Pétales',d:'Des pétales tombent en fond',p:25000},
+ {id:'f9',e:'💸',n:'Billets volants',d:'Des billets s’envolent à chaque clic',p:40000},
+ {id:'f10',e:'🎆',n:'Feux d’artifice',d:'Un vrai feu d’artifice à chaque clic',p:120000}
 ];
 const SKINS=[
- {id:'🪙',n:'Pièce classique',p:0},{id:'🍪',n:'Cookie',p:400},{id:'💎',n:'Diamant',p:6000},
- {id:'🐱',n:'Chat doré',p:30000},{id:'🌟',n:'Étoile',p:150000},{id:'🍕',n:'Pizza',p:1e6},{id:'🌍',n:'Planète',p:2e7}
+ {id:'🪙',n:'Pièce classique',p:0},{id:'🍪',n:'Cookie',p:400},{id:'🍩',n:'Donut',p:1500},{id:'💎',n:'Diamant',p:6000},{id:'🍔',n:'Burger',p:15000},{id:'🤖',n:'Robot',p:60000},
+ {id:'🐱',n:'Chat doré',p:30000},{id:'🌟',n:'Étoile',p:150000},{id:'🍕',n:'Pizza',p:1e6},{id:'🌍',n:'Planète',p:2e7},{id:'🦄',n:'Licorne',p:6e7},{id:'👾',n:'Alien',p:2e8},{id:'🐉',n:'Dragon',p:8e8},{id:'👑',n:'Couronne royale',p:5e9}
 ];
-const def=()=>({m:0,tot:0,ck:0,gc:0,fing:0,g:{},u:{},fx:{},sk:{'🪙':1},cur:'🪙',t:Date.now()});
+const def=()=>({m:0,tot:0,run:0,ck:0,gc:0,fing:0,g:{},u:{},fx:{},sk:{'🪙':1},cur:'🪙',t:Date.now(),rb:0,rp:0,pu:{},codes:{},ach:{},bm:1,bu:0,day:''});
 let S=def();
 try{const r=localStorage.getItem('piece-dor-v1');if(r)S=Object.assign(def(),JSON.parse(r))}catch(e){}
 let tab='gen';
@@ -112,23 +125,53 @@ const SUF=['','k','M','Md','B','Bd','T'];
 function f(n){if(n<1000)return Math.floor(n).toLocaleString('fr-FR');let i=0;while(n>=1000&&i<SUF.length-1){n/=1000;i++}return n.toFixed(n<10?2:1).replace('.',',')+' '+SUF[i]}
 function mult(t){let x=1;for(const u of UPS)if(S.u[u.id]&&(u.t===t||u.t==='all'&&t!=='x'))x*=u.m;return x}
 const allM=()=>UPS.reduce((x,u)=>S.u[u.id]&&u.t==='all'?x*u.m:x,1);
-const cv=()=>(1+S.fing)*UPS.reduce((x,u)=>S.u[u.id]&&u.t==='click'?x*u.m:x,1)*allM();
-const cps=()=>GENS.reduce((s,g)=>s+(S.g[g.id]||0)*g.c,0)*UPS.reduce((x,u)=>S.u[u.id]&&u.t==='cps'?x*u.m:x,1)*allM();
+const cv=()=>(1+S.fing)*UPS.reduce((x,u)=>S.u[u.id]&&u.t==='click'?x*u.m:x,1)*allM()*gm()*(1+.5*(S.pu.c||0));
+const cps=()=>GENS.reduce((s,g)=>s+(S.g[g.id]||0)*g.c,0)*UPS.reduce((x,u)=>S.u[u.id]&&u.t==='cps'?x*u.m:x,1)*allM()*gm()*(1+.5*(S.pu.a||0));
 const gcost=g=>Math.ceil(g.b*Math.pow(1.15,S.g[g.id]||0));
 const fcost=()=>Math.ceil(10*Math.pow(1.4,S.fing));
-function add(n){S.m+=n;S.tot+=n}
+function add(n){S.m+=n;S.tot+=n;S.run+=n}
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('s');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('s'),2200)}
 let ac;function ding(f0=880){if(!S.fx.f5)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f0;g.gain.setValueAtTime(.12,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.18);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.2)}catch(e){}}
+const CODES={BIENVENUE:['c',500],SIMON:['c',2500],CLICKER:['c',10000],PIECEDOR:['s',600],MIDAS:['b',3,60],TURBO:['b',2,120],MINEUR:['s',900],BOOST:['b',5,30],SUPERBOOST:['b',4,90],JACKPOT:['c',1e6],LUCKY777:['c',777777],BANQUE:['s',1800],ESPACE:['c',5e6],PORTAIL:['s',3600],TEMPS:['b',10,20],REBIRTH:['p',3],SECRET:['p',2],KONAMI:['c',3e5],NOEL:['b',3,180],MERCI:['s',1200]};
+const P=[{id:'c',e:'💪',n:'Doigts de fer',d:'+50 % de gain par clic',cost:l=>2*(l+1),max:50},{id:'a',e:'🤖',n:'Robots améliorés',d:'+50 % de production auto',cost:l=>2*(l+1),max:50},{id:'l',e:'💥',n:'Coups critiques',d:'+1 % de chance de clic ×10',cost:l=>3*(l+1),max:20},{id:'s',e:'🎁',n:'Capital de départ',d:'+10 000 pièces au début de chaque rebirth',cost:l=>3*(l+1),max:10}];
+const nG=()=>GENS.reduce((s,g)=>s+(S.g[g.id]||0),0);
+const ACH=[['Premier clic','👆',()=>S.ck>=1],['100 clics','🖱️',()=>S.ck>=100],['1 000 clics','🔥',()=>S.ck>=1000],['10 000 clics','🏋️',()=>S.ck>=1e4],['Gagner 1 000 pièces','💰',()=>S.tot>=1e3],['Gagner 1 million','🤑',()=>S.tot>=1e6],['Gagner 1 milliard','🏆',()=>S.tot>=1e9],['10 bâtiments','🏗️',()=>nG()>=10],['50 bâtiments','🏙️',()=>nG()>=50],['Premier rebirth','♻️',()=>S.rb>=1],['3 rebirths','🌀',()=>S.rb>=3],['5 pièces dorées','🌟',()=>S.gc>=5],['5 codes utilisés','🔑',()=>Object.keys(S.codes).length>=5]];
+const achN=()=>Object.keys(S.ach).length;
+const bm=()=>S.bu>Date.now()?S.bm:1;
+const gm=()=>(1+.2*S.rb)*(1+.02*achN())*bm();
+const rbReq=()=>1e6*Math.pow(4,S.rb);
+const rbGain=()=>S.run>=rbReq()?Math.max(2,Math.floor(2*Math.sqrt(S.run/rbReq()))):0;
+function checkAch(){ACH.forEach((a,i)=>{if(!S.ach[i]&&a[2]()){S.ach[i]=1;toast('Succès : '+a[0]+' '+a[1]+' (+2 % de gains)');if(tab==='ach')rAch()}})}
+function rebirth(){const g=rbGain();if(!g)return;if(!confirm('Rebirth : tu perds pièces, bâtiments et boosts, mais tu gagnes '+g+' points 💠 et +20 % de gains permanents. Continuer ?'))return;
+ S.rp+=g;S.rb++;S.m=(S.pu.s||0)*1e4;S.run=0;S.fing=0;S.g={};S.u={};toast('Rebirth n°'+S.rb+' ! +'+g+' 💠');ding(500);render();stats()}
+function buyP(id){const p=P.find(x=>x.id===id),l=S.pu[id]||0;if(l>=p.max||S.rp<p.cost(l))return;S.rp-=p.cost(l);S.pu[id]=l+1;ding(1000);render();stats()}
+function rRb(){const q=rbReq(),g=rbGain(),pc=Math.min(100,S.run/q*100);
+ $('list').innerHTML=`<div class="box">Rebirths : <b>${S.rb}</b> · Bonus permanent : <b>×${(1+.2*S.rb).toFixed(1).replace('.',',')}</b> · Points : <b>${S.rp} 💠</b><div class="bar"><i style="width:${pc}%"></i></div><small>${f(S.run)} / ${f(q)} gagnées dans cette partie</small></div>`+
+ `<button class="item pit${g?'':' cant'}" data-k="rb:"><span class="e">♻️</span><span><b>Faire un rebirth</b><small>${g?'Gagne '+g+' 💠 et +20 % de gains':'Pas encore assez de pièces'}</small></span></button>`+
+ P.map(p=>{const l=S.pu[p.id]||0,c=p.cost(l);return `<button class="item pit${S.rp<c||l>=p.max?' cant':''}" data-k="p:${p.id}"><span class="e">${p.e}</span><span><b>${p.n}</b><small>${p.d}</small></span><span class="c">${l>=p.max?'Max':c+' 💠'}<span class="n">Niveau ${l}</span></span></button>`}).join('')}
+function rAch(){$('list').innerHTML=`<div class="box">Chaque succès donne +2 % de gains. Débloqués : <b>${achN()}/${ACH.length}</b></div>`+ACH.map((a,i)=>`<div class="ach${S.ach[i]?' ok':''}"><span class="e">${S.ach[i]?a[1]:'🔒'}</span><b>${a[0]}</b></div>`).join('')}
+function rCodes(){$('list').innerHTML=`<div class="code"><input id="ci" placeholder="Entre un code" maxlength="20" autocomplete="off" autocapitalize="characters" aria-label="Code"><button id="cb">Valider</button></div><div class="box">Codes utilisés : <b>${Object.keys(S.codes).length}/20</b><br>Il y en a 20 de cachés, à toi de les trouver 😉</div>`;$('cb').onclick=redeem;$('ci').onkeydown=e=>{if(e.key==='Enter')redeem()}}
+function redeem(){const k=$('ci').value.trim().toUpperCase();if(!k)return;const r=CODES[k];if(!r){toast('Code invalide');return}if(S.codes[k]){toast('Code déjà utilisé');return}
+ S.codes[k]=1;const[t,a,b]=r;
+ if(t==='c'){add(a);toast('Code validé : +'+f(a)+' pièces !')}
+ else if(t==='s'){const g=Math.max(cps()*a,a*10);add(g);toast('Code validé : +'+f(g)+' pièces !')}
+ else if(t==='b'){S.bm=a;S.bu=Date.now()+b*1000;toast('Boost ×'+a+' pendant '+b+' s !')}
+ else{S.rp+=a;toast('Code validé : +'+a+' 💠')}
+ ding(1300);rCodes();stats()}
 const stage=$('stage');
 function spawn(txt,x,y,cls,css){const e=document.createElement('div');e.className=cls;e.textContent=txt;e.style.left=x+'px';e.style.top=y+'px';if(css)for(const k in css)e.style.setProperty(k,css[k]);stage.appendChild(e);setTimeout(()=>e.remove(),2600)}
 function click(ev){
- const v=cv();add(v);S.ck++;
+ let v=cv();const cr=Math.random()<.05+.01*(S.pu.l||0);if(cr)v*=10;add(v);S.ck++;
  const r=stage.getBoundingClientRect();let x=r.width/2,y=r.height/2-20;
  if(ev&&ev.clientX){x=ev.clientX-r.left;y=ev.clientY-r.top}
- spawn('+'+f(v),x-14+Math.random()*28,y-20,'fx');
+ spawn((cr?'💥 CRIT +':'+')+f(v),x-14+Math.random()*28,y-20,'fx');
  const burst=(arr,n)=>{for(let i=0;i<n;i++){const a=Math.random()*6.28,d=60+Math.random()*80;spawn(arr[Math.floor(Math.random()*arr.length)],x,y,'bit',{'--x':Math.cos(a)*d+'px','--y':Math.sin(a)*d-30+'px','--r':(Math.random()*720-360)+'deg'})}};
  if(S.fx.f1)burst(['🎊','🎉','🟡','🟢','🔵','🟣'],6);
  if(S.fx.f3)burst(['✨','⭐','🌟'],5);
+ if(S.fx.f6)burst(['🔥','🧨','☄️'],5);
+ if(S.fx.f9)burst(['💸','💵','💶','💴'],5);
+ if(S.fx.f10)burst(['🎆','🎇','✨','🎊'],9);
+ if(S.fx.f8)coin.animate([{filter:'hue-rotate(0deg)'},{filter:'hue-rotate(360deg)'}],{duration:450});
  if(S.fx.f4){stage.animate([{transform:'translate(0,0)'},{transform:'translate(-4px,2px)'},{transform:'translate(4px,-2px)'},{transform:'translate(0,0)'}],{duration:140})}
  ding(700+Math.random()*500);
 }
@@ -145,11 +188,12 @@ function items(){
  return SKINS.map(s=>({k:'s:'+s.id,e:s.id,n:s.n,d:S.cur===s.id?'Équipé':S.sk[s.id]?'Débloqué – toucher pour équiper':'Change l’apparence de la pièce',c:s.p,done:!!S.sk[s.id],eq:S.cur===s.id}))
 }
 function render(){
+ if(tab==='rb')return rRb();if(tab==='ach')return rAch();if(tab==='code')return rCodes();
  $('list').innerHTML=items().map(i=>{const own=i.done&&!i.eq&&tab==='skin';
   return `<button class="item${i.done?' done':''}${!i.done&&S.m<i.c?' cant':''}" data-k="${i.k}" data-c="${i.c}"><span class="e">${i.e}</span><span><b>${i.n}</b><small>${i.d}</small></span><span class="c">${i.eq?'✔ Équipé':i.done?(own?'Équiper':'✔ Acheté'):f(i.c)+' 🪙'}${i.o!==undefined?`<span class="n">Possédé : ${i.o}</span>`:''}</span></button>`}).join('')}
 function buy(k){
  const [t,id]=k.split(':');
- if(t==='fing'){const c=fcost();if(S.m<c)return;S.m-=c;S.fing++}
+ if(t==='rb'){rebirth();return}if(t==='p'){buyP(id);return}if(t==='fing'){const c=fcost();if(S.m<c)return;S.m-=c;S.fing++}
  else if(t==='g'){const g=GENS.find(x=>x.id===id),c=gcost(g);if(S.m<c)return;S.m-=c;S.g[id]=(S.g[id]||0)+1}
  else if(t==='u'){const u=UPS.find(x=>x.id===id);if(S.u[id]||S.m<u.p)return;S.m-=u.p;S.u[id]=1;toast(u.n+' acheté !')}
  else if(t==='x'){const x=FX.find(y=>y.id===id);if(S.fx[id]||S.m<x.p)return;S.m-=x.p;S.fx[id]=1;toast(x.n+' activé !')}
@@ -157,13 +201,13 @@ function buy(k){
  ding(1000);render();stats()}
 $('list').addEventListener('click',e=>{const b=e.target.closest('.item');if(b)buy(b.dataset.k)});
 document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.t;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));render()});
-function stats(){$('pc').textContent=f(cv());$('ps').textContent=f(cps());$('ck').textContent=f(S.ck);$('tt').textContent=f(S.tot);$('gc').textContent=f(S.gc)}
+function stats(){$('pc').textContent=f(cv());$('ps').textContent=f(cps());$('ck').textContent=f(S.ck);$('tt').textContent=f(S.tot);$('gc').textContent=f(S.gc);const b=$('bst');if(bm()>1){b.hidden=false;b.textContent='🔥 Boost ×'+bm()+' · '+Math.ceil((S.bu-Date.now())/1000)+' s'}else b.hidden=true;checkAch()}
 let last=performance.now(),acc=0,rainT=0;
 function loop(now){
  const dt=Math.min(now-last,1000)/1000;last=now;
  add(cps()*dt);$('money').textContent=f(S.m);
- acc+=dt;if(acc>.25){acc=0;stats();document.querySelectorAll('.item').forEach(b=>{if(!b.classList.contains('done'))b.classList.toggle('cant',S.m<+b.dataset.c)})}
- if(S.fx.f2){rainT+=dt;if(rainT>.35){rainT=0;spawn('🪙',Math.random()*(stage.clientWidth-20),0,'rain')}}
+ acc+=dt;if(acc>.25){acc=0;stats();document.querySelectorAll('.item:not(.pit)').forEach(b=>{if(!b.classList.contains('done'))b.classList.toggle('cant',S.m<+b.dataset.c)})}
+ const rn=[S.fx.f2&&'🪙',S.fx.f7&&'❄️',S.fx.f11&&'🌸'].filter(Boolean);if(rn.length){rainT+=dt;if(rainT>.35/rn.length){rainT=0;spawn(rn[Math.floor(Math.random()*rn.length)],Math.random()*(stage.clientWidth-20),0,'rain')}}
  requestAnimationFrame(loop)}
 let gEl=null;
 function goldenSoon(){const lucky=S.u.u7?.5:1;setTimeout(()=>{golden();goldenSoon()},(25000+Math.random()*35000)*lucky)}
@@ -177,7 +221,9 @@ setInterval(save,5000);addEventListener('beforeunload',save);
 // gains hors ligne (50 % de la production, 2 h max)
 const away=Math.min((Date.now()-S.t)/1000,7200);
 if(away>60&&cps()>0){const g=cps()*away*.5;add(g);setTimeout(()=>toast('Pendant ton absence : +'+f(g)+' pièces'),600)}
+const today=new Date().toDateString();if(S.day!==today){S.day=today;const d=Math.max(cps()*600,1000);add(d);setTimeout(()=>toast('Bonus du jour : +'+f(d)+' pièces 🎁'),1500)}
 coin.textContent=S.cur;render();stats();goldenSoon();requestAnimationFrame(loop);
 </script>
 </body>
 </html>
+
