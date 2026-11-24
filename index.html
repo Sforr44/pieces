@@ -56,6 +56,11 @@ background:radial-gradient(circle at 35% 30%,#fff3c4,#f2b632 55%,#b9780a);box-sh
 .code{display:flex;gap:8px}.code input{flex:1;font:inherit;padding:10px 12px;border-radius:14px;border:2px solid var(--line);background:var(--bg);color:var(--ink);text-transform:uppercase;min-width:0}.code button{font:inherit;font-weight:600;padding:10px 16px;border-radius:14px;border:0;background:var(--gold);color:#2a2418;cursor:pointer}
 .bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--ok)}
 #bst{color:var(--ok);font-weight:600}
+#adm{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:60;display:grid;place-items:center;padding:16px}#adm[hidden]{display:none}
+.ap{background:var(--panel);border:2px solid var(--gold);border-radius:24px;padding:16px;width:min(520px,100%);max-height:88vh;overflow-y:auto}.ap h2{margin:0 0 8px;font-size:1.2rem}
+.ap input{width:100%;font:inherit;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);margin-bottom:8px}
+.ap .g{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}.ap button{font:inherit;padding:9px 8px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}.ap button:hover{border-color:var(--gold)}
+.qty{display:flex;gap:6px;margin-bottom:8px}.qty[hidden]{display:none}.qty button{flex:1;font:inherit;padding:6px;border-radius:12px;border:2px solid var(--line);background:none;color:var(--ink);cursor:pointer}.qty button.on{border-color:var(--ok);color:var(--ok);font-weight:600}
 @media(prefers-reduced-motion:reduce){.fx,.bit,.rain,#gold{animation-duration:.01s}}
 </style>
 </head>
@@ -73,22 +78,30 @@ background:radial-gradient(circle at 35% 30%,#fff3c4,#f2b632 55%,#b9780a);box-sh
   <div class="tabs" role="tablist">
    <button class="on" data-t="gen">Auto</button><button data-t="up">Boosts</button><button data-t="fx">Effets</button><button data-t="skin">Skins</button><button data-t="rb">Rebirth</button><button data-t="ach">Succès</button><button data-t="code">Codes</button>
   </div>
+  <div class="qty" id="qty"><button data-q="1" class="on">×1</button><button data-q="10">×10</button><button data-q="100">×100</button><button data-q="max">Max</button></div>
   <div id="list"></div>
-  <div class="foot"><span id="save">Sauvegarde auto</span><button id="reset">Tout recommencer</button></div>
+  <div class="foot"><span id="save">Sauvegarde auto</span><button id="admb" hidden>🛠️ Admin</button><button id="reset">Tout recommencer</button></div>
  </section>
 </div>
+<div id="adm" hidden><div class="ap" role="dialog" aria-label="Panneau admin"></div></div>
 <div id="toast"></div>
 <script>
 const $=id=>document.getElementById(id);
 const GENS=[
  {id:'a',e:'🖱️',n:'Autoclicker',d:'Clique pour toi',b:15,c:1},
+ {id:'a2',e:'🧒',n:'Petit frère',d:'Clique quand il s’ennuie',b:45,c:2},
  {id:'b',e:'⛏️',n:'Mineur',d:'Creuse des pièces',b:100,c:5},
  {id:'c',e:'🐓',n:'Poule aux œufs d’or',d:'Pond sans arrêt',b:600,c:20},
  {id:'d',e:'🏭',n:'Usine à pièces',d:'Production en série',b:3500,c:100},
  {id:'e',e:'🏦',n:'Banque',d:'Les intérêts, ça rapporte',b:20000,c:550},
  {id:'f',e:'🚀',n:'Mine spatiale',d:'Astéroïdes en or',b:130000,c:3000},
  {id:'g',e:'🌀',n:'Portail dimensionnel',d:'Pièces d’autres mondes',b:900000,c:20000},
- {id:'h',e:'⏳',n:'Machine à remonter le temps',d:'Gagne hier aussi',b:7e6,c:150000}
+ {id:'h',e:'⏳',n:'Machine à remonter le temps',d:'Gagne hier aussi',b:7e6,c:150000},
+ {id:'i',e:'🧙',n:'Alchimiste',d:'Transforme le plomb en or',b:5e7,c:1e6},
+ {id:'j',e:'🐲',n:'Dragon gardien',d:'Veille sur un trésor sans fin',b:4e8,c:7e6},
+ {id:'k',e:'🌌',n:'Galaxie entière',d:'Des milliards d’étoiles en or',b:3e9,c:5e7},
+ {id:'l',e:'🎰',n:'Casino cosmique',d:'La banque gagne toujours',b:2.5e10,c:4e8},
+ {id:'m',e:'♾️',n:'Machine à l’infini',d:'Aucune limite',b:2e11,c:3e9}
 ];
 const UPS=[
  {id:'u1',e:'🧤',n:'Gants dorés',d:'Clic ×2',p:250,t:'click',m:2},
@@ -98,7 +111,13 @@ const UPS=[
  {id:'u5',e:'⚡',n:'Courant haute tension',d:'Auto ×2',p:60000,t:'cps',m:2},
  {id:'u6',e:'🧠',n:'Cerveau quantique',d:'Tout ×2',p:1.5e6,t:'all',m:2},
  {id:'u7',e:'🍀',n:'Trèfle à quatre feuilles',d:'Pièces dorées plus fréquentes',p:8000,t:'lucky',m:1},
- {id:'u8',e:'🌌',n:'Singularité',d:'Tout ×3',p:5e7,t:'all',m:3}
+ {id:'u8',e:'🌌',n:'Singularité',d:'Tout ×3',p:5e7,t:'all',m:3},
+ {id:'u9',e:'🥊',n:'Poing d’acier',d:'Clic ×4',p:3e5,t:'click',m:4},
+ {id:'u11',e:'🛠️',n:'Maintenance préventive',d:'Auto ×3',p:5e5,t:'cps',m:3},
+ {id:'u10',e:'🔮',n:'Boule de cristal',d:'Clic ×10',p:2e8,t:'click',m:10},
+ {id:'u12',e:'🤝',n:'Syndicat des robots',d:'Auto ×5',p:5e8,t:'cps',m:5},
+ {id:'u13',e:'📈',n:'Bourse infinie',d:'Tout ×5',p:5e9,t:'all',m:5},
+ {id:'u14',e:'🧬',n:'Évolution',d:'Tout ×10',p:1e11,t:'all',m:10}
 ];
 const FX=[
  {id:'f1',e:'🎉',n:'Confettis',d:'Des confettis à chaque clic',p:150},
@@ -138,7 +157,7 @@ const nG=()=>GENS.reduce((s,g)=>s+(S.g[g.id]||0),0);
 const ACH=[['Premier clic','👆',()=>S.ck>=1],['100 clics','🖱️',()=>S.ck>=100],['1 000 clics','🔥',()=>S.ck>=1000],['10 000 clics','🏋️',()=>S.ck>=1e4],['Gagner 1 000 pièces','💰',()=>S.tot>=1e3],['Gagner 1 million','🤑',()=>S.tot>=1e6],['Gagner 1 milliard','🏆',()=>S.tot>=1e9],['10 bâtiments','🏗️',()=>nG()>=10],['50 bâtiments','🏙️',()=>nG()>=50],['Premier rebirth','♻️',()=>S.rb>=1],['3 rebirths','🌀',()=>S.rb>=3],['5 pièces dorées','🌟',()=>S.gc>=5],['5 codes utilisés','🔑',()=>Object.keys(S.codes).length>=5]];
 const achN=()=>Object.keys(S.ach).length;
 const bm=()=>S.bu>Date.now()?S.bm:1;
-const gm=()=>(1+.2*S.rb)*(1+.02*achN())*bm();
+const gm=()=>(1+.2*S.rb)*(1+.02*achN())*bm()*(S.am||1);
 const rbReq=()=>1e6*Math.pow(4,S.rb);
 const rbGain=()=>S.run>=rbReq()?Math.max(2,Math.floor(2*Math.sqrt(S.run/rbReq()))):0;
 function checkAch(){ACH.forEach((a,i)=>{if(!S.ach[i]&&a[2]()){S.ach[i]=1;toast('Succès : '+a[0]+' '+a[1]+' (+2 % de gains)');if(tab==='ach')rAch()}})}
@@ -151,13 +170,20 @@ function rRb(){const q=rbReq(),g=rbGain(),pc=Math.min(100,S.run/q*100);
  P.map(p=>{const l=S.pu[p.id]||0,c=p.cost(l);return `<button class="item pit${S.rp<c||l>=p.max?' cant':''}" data-k="p:${p.id}"><span class="e">${p.e}</span><span><b>${p.n}</b><small>${p.d}</small></span><span class="c">${l>=p.max?'Max':c+' 💠'}<span class="n">Niveau ${l}</span></span></button>`}).join('')}
 function rAch(){$('list').innerHTML=`<div class="box">Chaque succès donne +2 % de gains. Débloqués : <b>${achN()}/${ACH.length}</b></div>`+ACH.map((a,i)=>`<div class="ach${S.ach[i]?' ok':''}"><span class="e">${S.ach[i]?a[1]:'🔒'}</span><b>${a[0]}</b></div>`).join('')}
 function rCodes(){$('list').innerHTML=`<div class="code"><input id="ci" placeholder="Entre un code" maxlength="20" autocomplete="off" autocapitalize="characters" aria-label="Code"><button id="cb">Valider</button></div><div class="box">Codes utilisés : <b>${Object.keys(S.codes).length}/20</b><br>Il y en a 20 de cachés, à toi de les trouver 😉</div>`;$('cb').onclick=redeem;$('ci').onkeydown=e=>{if(e.key==='Enter')redeem()}}
-function redeem(){const k=$('ci').value.trim().toUpperCase();if(!k)return;const r=CODES[k];if(!r){toast('Code invalide');return}if(S.codes[k]){toast('Code déjà utilisé');return}
+function redeem(){const k=$('ci').value.trim().toUpperCase();if(!k)return;if(k==='SIMONADMIN'){S.adm=1;$('admb').hidden=false;ding(1500);openAdmin();return}const r=CODES[k];if(!r){toast('Code invalide');return}if(S.codes[k]){toast('Code déjà utilisé');return}
  S.codes[k]=1;const[t,a,b]=r;
  if(t==='c'){add(a);toast('Code validé : +'+f(a)+' pièces !')}
  else if(t==='s'){const g=Math.max(cps()*a,a*10);add(g);toast('Code validé : +'+f(g)+' pièces !')}
  else if(t==='b'){S.bm=a;S.bu=Date.now()+b*1000;toast('Boost ×'+a+' pendant '+b+' s !')}
  else{S.rp+=a;toast('Code validé : +'+a+' 💠')}
  ding(1300);rCodes();stats()}
+let qty=1;
+function bulk(b,r,o,n){return Math.ceil(b*Math.pow(r,o)*(Math.pow(r,n)-1)/(r-1))}
+function qn(b,r,o){if(qty!=='max')return qty;let n=Math.max(1,Math.floor(Math.log(1+S.m*(r-1)/(b*Math.pow(r,o)))/Math.log(r)));while(n>1&&bulk(b,r,o,n)>S.m)n--;return n}
+$('qty').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;qty=b.dataset.q==='max'?'max':+b.dataset.q;document.querySelectorAll('#qty button').forEach(x=>x.classList.toggle('on',x===b));render()});
+const AD={give:n=>add(n),setm:n=>{S.m=n},rp:n=>{S.rp+=n},rbs:n=>{S.rb=Math.max(0,Math.floor(n))},fing:n=>{S.fing+=Math.floor(n)},gens:n=>GENS.forEach(g=>{S.g[g.id]=(S.g[g.id]||0)+Math.floor(n)}),am:n=>{S.am=n>0?n:1},boost:n=>{S.bm=n>0?n:1;S.bu=Date.now()+3e5},time:n=>add(cps()*n),all:()=>{UPS.forEach(u=>S.u[u.id]=1);FX.forEach(x=>S.fx[x.id]=1);SKINS.forEach(s=>S.sk[s.id]=1);ACH.forEach((a,i)=>S.ach[i]=1)},gold:()=>golden(),codes:()=>{S.codes={}}};
+function openAdmin(){const a=$('adm');a.hidden=false;a.firstElementChild.innerHTML='<h2>🛠️ Panneau admin</h2><input id="ax" inputmode="decimal" placeholder="Nombre (ex. 1e9)" value="1000000" aria-label="Valeur"><div class="g">'+[['give','Donner des pièces'],['setm','Fixer les pièces'],['rp','Donner des 💠'],['rbs','Fixer les rebirths'],['fing','Ajouter des niveaux de doigt'],['gens','+N de chaque bâtiment'],['am','Multiplicateur global ×N'],['boost','Boost ×N pendant 5 min'],['time','Avancer de N secondes'],['all','Tout débloquer'],['gold','Faire apparaître 🌟'],['codes','Réinitialiser les codes']].map(x=>'<button data-a="'+x[0]+'">'+x[1]+'</button>').join('')+'</div><button data-a="close" style="width:100%">Fermer</button>'}
+$('adm').addEventListener('click',e=>{if(e.target===$('adm')){$('adm').hidden=true;return}const b=e.target.closest('button[data-a]');if(!b)return;const k=b.dataset.a;if(k==='close'){$('adm').hidden=true;return}AD[k](Number($('ax').value)||0);render();stats();toast('Appliqué ✔')});
 const stage=$('stage');
 function spawn(txt,x,y,cls,css){const e=document.createElement('div');e.className=cls;e.textContent=txt;e.style.left=x+'px';e.style.top=y+'px';if(css)for(const k in css)e.style.setProperty(k,css[k]);stage.appendChild(e);setTimeout(()=>e.remove(),2600)}
 function click(ev){
@@ -181,20 +207,20 @@ coin.addEventListener('pointerdown',e=>{coin.classList.add('p');click(e)});
 coin.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();if(!e.repeat)click()}});
 coin.addEventListener('click',e=>{if(e.detail===0&&e.pointerType===undefined){}});
 function items(){
- if(tab==='gen')return GENS.map(g=>({k:'g:'+g.id,e:g.e,n:g.n,d:g.d+' · +'+f(g.c*mult('cps'))+'/s',c:gcost(g),o:S.g[g.id]||0}));
- if(tab==='up'){const a=[{k:'fing',e:'👆',n:'Meilleur doigt',d:'+1 par clic',c:fcost(),o:S.fing}];
+ if(tab==='gen')return GENS.map(g=>{const o=S.g[g.id]||0,n=qn(g.b,1.15,o);return{k:'g:'+g.id,e:g.e,n:g.n+(n>1?' ×'+n:''),d:g.d+' · +'+f(g.c*mult('cps')*n)+'/s',c:bulk(g.b,1.15,o,n),o}});
+ if(tab==='up'){const fn=qn(10,1.4,S.fing);const a=[{k:'fing',e:'👆',n:'Meilleur doigt'+(fn>1?' ×'+fn:''),d:'+'+fn+' par clic',c:bulk(10,1.4,S.fing,fn),o:S.fing}];
   UPS.forEach(u=>a.push({k:'u:'+u.id,e:u.e,n:u.n,d:u.d,c:u.p,done:!!S.u[u.id]}));return a}
  if(tab==='fx')return FX.map(x=>({k:'x:'+x.id,e:x.e,n:x.n,d:x.d,c:x.p,done:!!S.fx[x.id]}));
  return SKINS.map(s=>({k:'s:'+s.id,e:s.id,n:s.n,d:S.cur===s.id?'Équipé':S.sk[s.id]?'Débloqué – toucher pour équiper':'Change l’apparence de la pièce',c:s.p,done:!!S.sk[s.id],eq:S.cur===s.id}))
 }
 function render(){
- if(tab==='rb')return rRb();if(tab==='ach')return rAch();if(tab==='code')return rCodes();
+ $('qty').hidden=!(tab==='gen'||tab==='up');if(tab==='rb')return rRb();if(tab==='ach')return rAch();if(tab==='code')return rCodes();
  $('list').innerHTML=items().map(i=>{const own=i.done&&!i.eq&&tab==='skin';
   return `<button class="item${i.done?' done':''}${!i.done&&S.m<i.c?' cant':''}" data-k="${i.k}" data-c="${i.c}"><span class="e">${i.e}</span><span><b>${i.n}</b><small>${i.d}</small></span><span class="c">${i.eq?'✔ Équipé':i.done?(own?'Équiper':'✔ Acheté'):f(i.c)+' 🪙'}${i.o!==undefined?`<span class="n">Possédé : ${i.o}</span>`:''}</span></button>`}).join('')}
 function buy(k){
  const [t,id]=k.split(':');
- if(t==='rb'){rebirth();return}if(t==='p'){buyP(id);return}if(t==='fing'){const c=fcost();if(S.m<c)return;S.m-=c;S.fing++}
- else if(t==='g'){const g=GENS.find(x=>x.id===id),c=gcost(g);if(S.m<c)return;S.m-=c;S.g[id]=(S.g[id]||0)+1}
+ if(t==='rb'){rebirth();return}if(t==='p'){buyP(id);return}if(t==='fing'){const n=qn(10,1.4,S.fing),c=bulk(10,1.4,S.fing,n);if(S.m<c)return;S.m-=c;S.fing+=n}
+ else if(t==='g'){const g=GENS.find(x=>x.id===id),o=S.g[id]||0,n=qn(g.b,1.15,o),c=bulk(g.b,1.15,o,n);if(S.m<c)return;S.m-=c;S.g[id]=o+n}
  else if(t==='u'){const u=UPS.find(x=>x.id===id);if(S.u[id]||S.m<u.p)return;S.m-=u.p;S.u[id]=1;toast(u.n+' acheté !')}
  else if(t==='x'){const x=FX.find(y=>y.id===id);if(S.fx[id]||S.m<x.p)return;S.m-=x.p;S.fx[id]=1;toast(x.n+' activé !')}
  else if(t==='s'){const s=SKINS.find(y=>y.id===id);if(!S.sk[id]){if(S.m<s.p)return;S.m-=s.p;S.sk[id]=1}S.cur=id;coin.textContent=id}
@@ -222,6 +248,7 @@ setInterval(save,5000);addEventListener('beforeunload',save);
 const away=Math.min((Date.now()-S.t)/1000,7200);
 if(away>60&&cps()>0){const g=cps()*away*.5;add(g);setTimeout(()=>toast('Pendant ton absence : +'+f(g)+' pièces'),600)}
 const today=new Date().toDateString();if(S.day!==today){S.day=today;const d=Math.max(cps()*600,1000);add(d);setTimeout(()=>toast('Bonus du jour : +'+f(d)+' pièces 🎁'),1500)}
+$('admb').hidden=!S.adm;$('admb').onclick=openAdmin;
 coin.textContent=S.cur;render();stats();goldenSoon();requestAnimationFrame(loop);
 </script>
 </body>
