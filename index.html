@@ -68,6 +68,7 @@ background:radial-gradient(circle at 35% 30%,#fff3c4,#f2b632 55%,#b9780a);box-sh
 #auth input:not([type=checkbox]){font:inherit;padding:12px;border-radius:14px;border:2px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
 #auth .go,#auth .guest{font:inherit;font-weight:600;padding:12px;border-radius:14px;border:0;cursor:pointer}#auth .go{background:var(--gold);color:#2a2418}#auth .guest{background:none;border:2px solid var(--line);color:var(--ink)}
 #auth .rem{font-size:.85rem;color:var(--mut);text-align:left}#auth small{color:var(--mut)}#am{min-height:1.2em;color:#d9534f;font-size:.9rem}
+.ap button small{display:block;color:var(--mut);font-size:.72rem;font-weight:400}.ap .tabs button{padding:7px 4px;font-size:.78rem}.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.ap .chips button{padding:5px 9px;font-size:.8rem}#ast{color:var(--mut);font-size:.85rem;margin-bottom:8px}
 @media(prefers-reduced-motion:reduce){.fx,.bit,.rain,#gold{animation-duration:.01s}}
 </style>
 </head>
@@ -168,17 +169,25 @@ const FX=[
  {id:'f15',e:'💥',n:'Onde de choc',d:'La pièce pulse fort à chaque clic',p:100000},
  {id:'f16',e:'🌌',n:'Aurore',d:'Un halo lumineux à chaque clic',p:8e5},
  {id:'f18',e:'🦋',n:'Papillons',d:'Des papillons s’envolent',p:6e6},
- {id:'f20',e:'💫',n:'Tourbillon',d:'Une spirale d’étoiles',p:3e9}
+ {id:'f20',e:'💫',n:'Tourbillon',d:'Une spirale d’étoiles',p:3e9},
+ {id:'f21',e:'🎈',n:'Ballons',d:'Des ballons montent à chaque clic',p:12000},
+ {id:'f22',e:'🧊',n:'Glace',d:'Des glaçons jaillissent',p:2e5},
+ {id:'f23',e:'🪩',n:'Disco',d:'La pièce change de couleur très vite',p:3e7},
+ {id:'f24',e:'🌊',n:'Vagues',d:'Une vague d’écume à chaque clic',p:2e8},
+ {id:'f25',e:'👻',n:'Fantômes',d:'Une procéssion de fantômes',p:4e10},
+ {id:'f26',e:'🌋',n:'Éruption',d:'Lave et cendres à chaque clic',p:5e11},
+ {id:'f27',e:'🪐',n:'Orbite',d:'Des planètes tournent autour',p:1e13},
+ {id:'f28',e:'⛈️',n:'Tempête',d:'Orage et secousses',p:1e15}
 ];
 const SKINS=[
- {id:'🪙',n:'Pièce classique',p:0},{id:'🍪',n:'Cookie',p:400},{id:'🍎',n:'Pomme',p:800},{id:'🍩',n:'Donut',p:1500},{id:'⚽',n:'Ballon',p:3000},{id:'💎',n:'Diamant',p:6000},{id:'🌻',n:'Tournesol',p:9000},{id:'🍔',n:'Burger',p:15000},{id:'🎱',n:'Boule de billard',p:30000},{id:'🤖',n:'Robot',p:60000},{id:'🍉',n:'Pastèque',p:90000},{id:'🧀',n:'Fromage',p:250000},
- {id:'🐱',n:'Chat doré',p:30000},{id:'🌟',n:'Étoile',p:150000},{id:'🍕',n:'Pizza',p:1e6},{id:'🌍',n:'Planète',p:2e7},{id:'🦄',n:'Licorne',p:6e7},{id:'👾',n:'Alien',p:2e8},{id:'🐉',n:'Dragon',p:8e8},{id:'👑',n:'Couronne royale',p:5e9},{id:'🔱',n:'Trident',p:1e11},{id:'🕳️',n:'Trou noir',p:1e13},{id:'🎃',n:'Citrouille ensorcelée',p:3e13},{id:'🦖',n:'Dinosaure',p:1e14},{id:'🛸',n:'Soucoupe',p:5e14},{id:'🧿',n:'Talisman',p:1e16},{id:'🌈',n:'Arc de l’infini',p:1e18}
+ {id:'🪙',n:'Pièce classique',p:0},{id:'🍪',n:'Cookie',p:400},{id:'🍎',n:'Pomme',p:800},{id:'🍩',n:'Donut',p:1500},{id:'⚽',n:'Ballon',p:3000},{id:'💎',n:'Diamant',p:6000},{id:'🌻',n:'Tournesol',p:9000},{id:'🍔',n:'Burger',p:15000},{id:'🎱',n:'Boule de billard',p:30000},{id:'🧸',n:'Ours en peluche',p:45000},{id:'🤖',n:'Robot',p:60000},{id:'🍉',n:'Pastèque',p:90000},{id:'🧀',n:'Fromage',p:250000},{id:'🎸',n:'Guitare électrique',p:500000},
+ {id:'🐱',n:'Chat doré',p:30000},{id:'🌟',n:'Étoile',p:150000},{id:'🍕',n:'Pizza',p:1e6},{id:'🎲',n:'Dé géant',p:3e6},{id:'🌍',n:'Planète',p:2e7},{id:'🗿',n:'Moai',p:4e7},{id:'🦄',n:'Licorne',p:6e7},{id:'👾',n:'Alien',p:2e8},{id:'🐉',n:'Dragon',p:8e8},{id:'👑',n:'Couronne royale',p:5e9},{id:'🔱',n:'Trident',p:1e11},{id:'🕳️',n:'Trou noir',p:1e13},{id:'🎃',n:'Citrouille ensorcelée',p:3e13},{id:'🦖',n:'Dinosaure',p:1e14},{id:'🛸',n:'Soucoupe',p:5e14},{id:'🧿',n:'Talisman',p:1e16},{id:'🌈',n:'Arc de l’infini',p:1e18},{id:'🏰',n:'Château céleste',p:5e19},{id:'🌠',n:'Étoile filante',p:2e20},{id:'⚡',n:'Foudre pure',p:1e21},{id:'💠',n:'Gemme céleste',p:5e21},{id:'🔮',n:'Boule de cristal',p:1e23},{id:'🌌',n:'Cosmos',p:1e25}
 ];
 const def=()=>({m:0,tot:0,run:0,ck:0,gc:0,fing:0,g:{},u:{},fx:{},sk:{'🪙':1},cur:'🪙',t:Date.now(),rb:0,rp:0,pu:{},codes:{},ach:{},bm:1,bu:0,day:'',pets:{},pet:'',q:null,qd:0,pt:0,stk:0,cust:{}});
 let S=def();
 try{const r=localStorage.getItem('piece-dor-v1');if(r)S=Object.assign(def(),JSON.parse(r))}catch(e){}
 let tab='gen';
-const SUF=['','k','M','Md','B','Bd','T'];
+const SUF=['','k','M','Md','B','Bd','T','Td','Q','Qd','S','Sd','O'];
 function f(n){if(n<1000)return Math.floor(n).toLocaleString('fr-FR');let i=0;while(n>=1000&&i<SUF.length-1){n/=1000;i++}return n.toFixed(n<10?2:1).replace('.',',')+' '+SUF[i]}
 function mult(t){let x=1;for(const u of UPS)if(S.u[u.id]&&(u.t===t||u.t==='all'&&t!=='x'))x*=u.m;return x}
 const allM=()=>UPS.reduce((x,u)=>S.u[u.id]&&u.t==='all'?x*u.m:x,1);
@@ -196,12 +205,12 @@ const nG=()=>GENS.reduce((s,g)=>s+(S.g[g.id]||0),0);
 const ACH=[['Premier clic','👆',()=>S.ck>=1],['100 clics','🖱️',()=>S.ck>=100],['1 000 clics','🔥',()=>S.ck>=1000],['10 000 clics','🏋️',()=>S.ck>=1e4],['Gagner 1 000 pièces','💰',()=>S.tot>=1e3],['Gagner 1 million','🤑',()=>S.tot>=1e6],['Gagner 1 milliard','🏆',()=>S.tot>=1e9],['10 bâtiments','🏗️',()=>nG()>=10],['50 bâtiments','🏙️',()=>nG()>=50],['Premier rebirth','♻️',()=>S.rb>=1],['3 rebirths','🌀',()=>S.rb>=3],['5 pièces dorées','🌟',()=>S.gc>=5],['5 codes utilisés','🔑',()=>Object.keys(S.codes).length>=5],['Gagner mille milliards','🌍',()=>S.tot>=1e12],['Gagner un quadrillion','🪐',()=>S.tot>=1e15],['10 rebirths','👑',()=>S.rb>=10],['200 bâtiments','🏰',()=>nG()>=200],['500 bâtiments','🌆',()=>nG()>=500],['Gagner un trillion de billions','🌠',()=>S.tot>=1e18],['25 pièces dorées','🌟',()=>S.gc>=25],['10 quêtes','📜',()=>(S.qd||0)>=10]];
 const achN=()=>Object.keys(S.ach).length;
 const bm=()=>S.bu>Date.now()?S.bm:1;
-const gm=()=>rbMul()*(1+.02*achN())*bm()*(S.am||1)*(S.cu>Date.now()?.3:1)*petM('all');
-const rbReq=(k=S.rb)=>1e9*Math.pow(12,k);
-const GR=1.32,PD=12,NERF=.5,DS=()=>1-.02*(S.pu.d||0),HARD=(b,r)=>r===1.15?[b*DS(),GR]:[b*10*DS(),1.65];
+const gm=()=>rbMul()*(1+.02*achN())*bm()*(S.am||1)*(S.cu>Date.now()?Math.min(1,.3+.1*(S.pu.b||0)):1)*petM('all')*(1+.1*(S.pu.x||0));
+const rbReq=(k=S.rb)=>5e10*Math.pow(20,k);
+const GR=1.38,PD=40,NERF=.35,DS=()=>1-.02*(S.pu.d||0),HARD=(b,r)=>r===1.15?[b*DS(),GR]:[b*10*DS(),1.8];
 const rbMax=()=>{let n=0;while(n<500&&S.run>=rbReq(S.rb+n))n++;return n};
 const rbN=()=>{const m=rbMax();return qty==='max'?m:Math.min(qty,m)};
-const rbGainN=n=>{let g=0;for(let i=0;i<n;i++)g+=Math.max(1,Math.floor(1.5*Math.pow(S.run/rbReq(S.rb+i),.4)*(1+.1*(S.pu.r||0))));return g};
+const rbGainN=n=>{let g=0;for(let i=0;i<n;i++)g+=Math.max(1,Math.floor(Math.pow(S.run/rbReq(S.rb+i),.3)*(1+.05*(S.pu.r||0))));return g};
 const rbGain=()=>rbGainN(rbN());
 function checkAch(){ACH.forEach((a,i)=>{if(!S.ach[i]&&a[2]()){S.ach[i]=1;toast('Succès : '+a[0]+' '+a[1]+' (+2 % de gains)');if(tab==='ach')rAch()}})}
 function rebirth(){const g=rbGain();if(!g)return;if(!confirm('Rebirth : tu perds pièces, bâtiments et boosts, mais tu gagnes '+g+' points 💠 et +20 % de gains permanents. Continuer ?'))return;
@@ -226,8 +235,8 @@ function qn(b,r,o){if(qty!=='max')return qty;const[b2,r2]=HARD(b,r);let n=Math.m
 $('qty').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;qty=b.dataset.q==='max'?'max':+b.dataset.q;document.querySelectorAll('#qty button').forEach(x=>x.classList.toggle('on',x===b));render()});
 const AD={give:n=>add(n),setm:n=>{S.m=n},rp:n=>{S.rp+=n},rbs:n=>{S.rb=Math.max(0,Math.floor(n))},fing:n=>{S.fing+=Math.floor(n)},gens:n=>GENS.forEach(g=>{S.g[g.id]=(S.g[g.id]||0)+Math.floor(n)}),am:n=>{S.am=n>0?n:1},boost:n=>{S.bm=n>0?n:1;S.bu=Date.now()+3e5},time:n=>add(cps()*n),all:()=>{UPS.forEach(u=>S.u[u.id]=1);FX.forEach(x=>S.fx[x.id]=1);SKINS.forEach(s=>S.sk[s.id]=1);ACH.forEach((a,i)=>S.ach[i]=1)},gold:()=>golden(),codes:()=>{S.codes={}}};
 function openAdmin(){const a=$('adm');a.hidden=false;a.firstElementChild.innerHTML='<h2>🛠️ Panneau admin</h2><input id="ax" inputmode="decimal" placeholder="Nombre (ex. 1e9)" value="1000000" aria-label="Valeur"><div class="g">'+[['give','Donner des pièces'],['setm','Fixer les pièces'],['rp','Donner des 💠'],['rbs','Fixer les rebirths'],['fing','Ajouter des niveaux de doigt'],['gens','+N de chaque bâtiment'],['am','Multiplicateur global ×N'],['boost','Boost ×N pendant 5 min'],['time','Avancer de N secondes'],['all','Tout débloquer'],['gold','Faire apparaître 🌟'],['codes','Réinitialiser les codes']].map(x=>'<button data-a="'+x[0]+'">'+x[1]+'</button>').join('')+'</div><button data-a="close" style="width:100%">Fermer</button>'}
-$('adm').addEventListener('click',e=>{if(e.target===$('adm')){$('adm').hidden=true;return}const b=e.target.closest('button[data-a]');if(!b)return;const k=b.dataset.a;if(k==='close'){$('adm').hidden=true;return}admLog.unshift(k+' '+($('ax')?$('ax').value:''));const r=AD[k](Number($('ax')?.value)||0);render();stats();if(r!==false)toast('Appliqué ✔')});
-function rebirth(){const n=rbN();if(!n)return;const g=rbGainN(n);if(!confirm('Rebirth ×'+n+' : tu perds pièces, bâtiments et boosts, mais tu gagnes '+g+' 💠 et +'+rbPct(n)+' % de gains permanents. Continuer ?'))return;S.rp+=g;S.rb+=n;S.m=(S.pu.s||0)*1e4;S.run=0;S.fing=0;S.g={};S.u={};toast('Rebirth ×'+n+' ! +'+g+' 💠');ding(500);render();stats()}
+$('adm').addEventListener('click',e=>{if(e.target===$('adm')){$('adm').hidden=true;return}const b=e.target.closest('button[data-a]');if(!b)return;const k=b.dataset.a;if(k==='close'){$('adm').hidden=true;return}admLog.unshift(k+' '+($('ax')?$('ax').value:''));const r=AD[k](Number($('ax')?.value)||0);render();stats();if(r!==false)toast('Appliqué ✔');if($('ast'))$('ast').textContent=admSt()});
+function rebirth(){const n=rbN();if(!n)return;const g=rbGainN(n);if(!confirm('Rebirth ×'+n+' : tu perds pièces, bâtiments, boosts, effets et skins, mais tu gagnes '+g+' 💠 et +'+rbPct(n)+' % de gains permanents. Continuer ?'))return;S.rp+=g;S.rb+=n;S.m=(S.pu.s||0)*1e4+S.m*.02*(S.pu.k||0);S.run=0;S.fing=0;S.g={};S.u={};S.fx={};S.sk={'🪙':1};S.cur='🪙';coin.textContent='🪙';toast('Rebirth ×'+n+' ! +'+g+' 💠');ding(500);render();stats()}
 function buyP(id){const p=P.find(x=>x.id===id);let l=S.pu[id]||0,k=0,t=0;const w=qty==='max'?1e9:qty;while(k<w&&l<p.max&&t+p.cost(l)<=S.rp){t+=p.cost(l);l++;k++}if(!k)return;S.rp-=t;S.pu[id]=l;ding(1000);render();stats()}
 function pq(p){let l=S.pu[p.id]||0,k=0,t=0;const w=qty==='max'?1e9:qty;while(k<w&&l<p.max&&(qty!=='max'||t+p.cost(l)<=S.rp)){t+=p.cost(l);l++;k++}if(!k&&l<p.max){k=1;t=p.cost(l)}return[k,t]}
 function rRb(){const m=rbMax(),n=rbN(),g=rbGainN(n),q=rbReq(),pc=Math.min(100,S.run/q*100);
@@ -241,8 +250,8 @@ $('thm').onclick=()=>{const r=document.documentElement,d=r.dataset.theme==='dark
 Object.assign(AD,{mul:n=>{S.m*=n||1},clr:()=>{S.m=0},spd:n=>{S.spd=n>0?n:1},inf:()=>{S.inf=!S.inf;toast('Argent infini : '+(S.inf?'activé':'désactivé'))},acl:n=>{S.acl=Math.max(0,n)},cf:()=>{S.cf=Date.now()+6e4},sgive:n=>{const i=$('as').value;S.g[i]=(S.g[i]||0)+Math.floor(n)},sset:n=>{S.g[$('as').value]=Math.max(0,Math.floor(n))},sclr:()=>{S.g={}},cc:n=>{S.cc=n>=0?n/100:null},skin:()=>{const k=$('ak').value;S.sk[k]=1;S.cur=k;coin.textContent=k},lock:()=>{S.u={};S.fx={};S.sk={'🪙':1};S.cur='🪙';coin.textContent='🪙'},ach:()=>{ACH.forEach((a,i)=>S.ach[i]=1)},rbf:n=>{S.rb+=Math.floor(n);S.m=0;S.run=0;S.fing=0;S.g={};S.u={}},cls:()=>{S.bu=0;S.cf=0;S.cu=0},skull:()=>{S.cu=Date.now()+2e4},exp:()=>{$('ad').value=btoa(unescape(encodeURIComponent(JSON.stringify(S))))},imp:()=>{try{S=Object.assign(def(),JSON.parse(decodeURIComponent(escape(atob($('ad').value.trim())))));coin.textContent=S.cur;toast('Sauvegarde importée')}catch(e){toast('Données invalides')}},wipe:()=>{if(confirm('Effacer toute la sauvegarde ?')){S=def();S.adm=1;coin.textContent='🪙'}}});
 function openAdminPanel(){const a=$('adm');a.hidden=false;const sec=[['Pièces',[['give','Donner'],['setm','Fixer'],['mul','Multiplier ×N'],['clr','Tout vider'],['inf','Argent infini on/off'],['time','Avancer de N s']]],['Production',[['am','Multiplicateur global ×N'],['spd','Vitesse du jeu ×N'],['acl','Auto-clics par seconde'],['boost','Boost ×N (5 min)'],['cf','Clic ×20 (60 s)'],['cc','Chance de critique en %'],['cls','Annuler boosts et malédiction']]],['Bâtiments (choisis dans la liste)',[['sgive','Donner N'],['sset','Fixer à N'],['sclr','Tout retirer'],['gens','+N de chaque']]],['Progression',[['fing','Niveaux de doigt +N'],['rp','Donner des 💠'],['rbs','Fixer les rebirths'],['rbf','Rebirth forcé ×N'],['all','Tout débloquer'],['lock','Tout verrouiller'],['ach','Tous les succès'],['skin','Équiper le skin choisi'],['codes','Réinitialiser les codes']]],['Événements',[['gold','Pièce dorée 🌟'],['skull','Malédiction ☠️']]],['Sauvegarde',[['exp','Exporter'],['imp','Importer'],['wipe','Tout effacer']]],['Compte',[['pw','Changer le mot de passe'],['out','Se déconnecter']]],['Outils',[['pets','Débloquer tous les familiers'],['qdone','Terminer les quêtes'],['mk','Créer un code (nom ci-dessous, valeur en haut)']]]];
  a.firstElementChild.innerHTML=`<h2>🛠️ Panneau admin</h2><input id='ax' inputmode='decimal' value='1000000' aria-label='Valeur'><select id='as' aria-label='Bâtiment'>${GENS.map(g=>`<option value='${g.id}'>${g.e} ${g.n}</option>`).join('')}</select><select id='ak' aria-label='Skin'>${SKINS.map(s=>`<option value='${s.id}'>${s.id} ${s.n}</option>`).join('')}</select>`+sec.map(s=>`<h3 class='rates'>${s[0]}</h3><div class='g'>${s[1].map(x=>`<button data-a='${x[0]}'>${x[1]}</button>`).join('')}</div>`).join('')+`<input id='np' type='password' placeholder='Nouveau mot de passe' autocomplete='new-password'><input id='ac' placeholder='Nom du code personnalisé'><pre id='lg' class='rates'>${admLog.slice(0,6).join(' · ')}</pre><textarea id='ad' rows='3' placeholder='Sauvegarde exportée / à importer'></textarea><button data-a='close' style='width:100%'>Fermer</button>`}
-P.forEach(p=>{const c=p.cost;p.cost=l=>Math.ceil(c(l)*Math.pow(1.3,l))});
-const rbMulAt=k=>1+.12*Math.pow(k,.75),rbMul=()=>rbMulAt(S.rb),rbPct=n=>Math.round((rbMulAt(S.rb+n)/rbMul()-1)*100);
+P.forEach(p=>{const c=p.cost;p.cost=l=>Math.ceil(c(l)*3*Math.pow(1.5,l))});
+const rbMulAt=k=>1+.08*Math.pow(k,.7),rbMul=()=>rbMulAt(S.rb),rbPct=n=>Math.round((rbMulAt(S.rb+n)/rbMul()-1)*100);
 let cmb=1,lastC=0,admIn=false,fails=0,lockT=0;const admLog=[];
 const hs=s=>{let x=5381;for(const c of s)x=((x*33)^c.charCodeAt(0))>>>0;return x};
 const PETS=[{id:'🐱',n:'Chaton',d:'Clic ×1,5',p:2e5,t:'click',m:1.5},{id:'🐶',n:'Chiot',d:'Production ×1,3',p:3e6,t:'cps',m:1.3},{id:'🦊',n:'Renard chanceux',d:'Pièces dorées 40 % plus fréquentes',p:5e7,t:'lucky',m:.6},{id:'🦉',n:'Hibou sage',d:'Tout ×1,4',p:1e9,t:'all',m:1.4},{id:'🐲',n:'Dragonneau',d:'Clic ×4',p:2e10,t:'click',m:4},{id:'🦄',n:'Licorne magique',d:'Tout ×2',p:5e11,t:'all',m:2},{id:'🐼',n:'Panda zen',d:'Clic ×10',p:8e12,t:'click',m:10},{id:'🦅',n:'Aigle royal',d:'Production ×3',p:1e14,t:'cps',m:3},{id:'🐙',n:'Kraken',d:'Tout ×4',p:5e15,t:'all',m:4}];
@@ -253,7 +262,7 @@ const QL={click:'Faire {n} clics',earn:'Gagner {n} pièces',build:'Acheter {n} b
 const qCur=t=>({click:S.ck,earn:S.tot,build:nG(),gold:S.gc})[t];
 const qNow=q=>Math.max(0,qCur(q.t)-q.base);
 function newQ(){const t=['click','earn','build','gold'][Math.floor(Math.random()*4)];const g={click:150+S.ck*.05,earn:Math.max(1e4,S.tot*.25),build:5+nG()*.1,gold:1+S.gc*.05}[t];return{t,base:qCur(t),goal:Math.ceil(g)}}
-function claimQ(i){const q=S.q[i];if(!q||qNow(q)<q.goal)return;const b=Math.max(cps()*900,5000);add(b);let t='+'+f(b)+' pièces';if(Math.random()<.3){S.rp+=1;t+=' et +1 💠'}S.qd=(S.qd||0)+1;S.q[i]=newQ();toast('Quête réussie ! '+t);ding(1300);render();stats()}
+function claimQ(i){const q=S.q[i];if(!q||qNow(q)<q.goal)return;const b=Math.max(cps()*900,5000)*(1+.5*(S.pu.q||0));add(b);let t='+'+f(b)+' pièces';if(Math.random()<.3){S.rp+=1;t+=' et +1 💠'}S.qd=(S.qd||0)+1;S.q[i]=newQ();toast('Quête réussie ! '+t);ding(1300);render();stats()}
 function rQ(){$('list').innerHTML=`<div class='box'>Quêtes terminées : <b>${S.qd||0}</b> · Récompense : des pièces, et parfois un 💠</div>`+S.q.map((q,i)=>{const p=qNow(q);return `<button class='item pit${p<q.goal?' cant':''}' data-k='q:${i}'><span class='e'>📜</span><span><b>${QL[q.t].replace('{n}',f(q.goal))}</b><small>${f(Math.min(p,q.goal))} / ${f(q.goal)}${p>=q.goal?' · Toucher pour réclamer':''}</small></span></button>`}).join('')}
 function rAch(){const t=S.pt||0;$('list').innerHTML=`<div class='box'>Temps de jeu : <b>${Math.floor(t/3600)} h ${Math.floor(t%3600/60)} min</b> · Clics : <b>${f(S.ck)}</b> · Total gagné : <b>${f(S.tot)}</b> · Rebirths : <b>${S.rb}</b> · Quêtes : <b>${S.qd||0}</b> · Série : <b>${S.stk||0} j</b><br>Chaque succès donne +2 % de gains. Débloqués : <b>${achN()}/${ACH.length}</b></div>`+ACH.map((a,i)=>`<div class='ach${S.ach[i]?' ok':''}'><span class='e'>${S.ach[i]?a[1]:'🔒'}</span><b>${a[0]}</b></div>`).join('')}
 Object.assign(AD,{login:()=>{if(Date.now()<lockT){toast('Trop d’essais, patiente '+Math.ceil((lockT-Date.now())/1000)+' s');return false}const u=$('lu').value.trim().toLowerCase(),p=$('lp').value;if(u==='admin'&&hs(p)===(S.apw||hs('clicker'))){admIn=true;fails=0;toast('Connecté ✔');openAdmin();return false}fails++;if(fails>=3){lockT=Date.now()+30000;fails=0}toast('Identifiants incorrects');return false},pw:()=>{const v=$('np').value;if(v.length<4){toast('4 caractères minimum');return false}S.apw=hs(v);$('np').value='';toast('Mot de passe changé ✔');return false},out:()=>{admIn=false;$('adm').hidden=true;return false},pets:()=>{PETS.forEach(p=>S.pets[p.id]=1)},qdone:()=>{S.q=S.q.map(q=>({...q,base:q.base-q.goal}))},mk:()=>{const c=$('ac').value.trim().toUpperCase();if(!c){toast('Donne un nom au code');return false}S.cust=S.cust||{};S.cust[c]=Math.max(1,Number($('ax').value)||1);toast('Code '+c+' créé (+'+f(S.cust[c])+')');return false}});
@@ -261,7 +270,7 @@ function openAdmin(){const a=$('adm');if(admIn)return openAdminPanel();a.hidden=
 let acct=null,SK='piece-dor-v1';
 const legacy=(()=>{try{return JSON.parse(localStorage.getItem('piece-dor-v1'))}catch(e){return null}})();
 const ACC=()=>{try{return JSON.parse(localStorage.getItem('pd-acc')||'{}')}catch(e){return{}}};
-function afterLoad(){const away=Math.min((Date.now()-S.t)/1000,7200);if(away>60&&cps()>0){const g=cps()*away*(.25+.1*(S.pu.o||0));add(g);setTimeout(()=>toast('Pendant ton absence : +'+f(g)+' pièces'),1800)}
+function afterLoad(){const away=Math.min((Date.now()-S.t)/1000,7200);if(away>60&&cps()>0){const g=cps()*away*(.15+.05*(S.pu.o||0));add(g);setTimeout(()=>toast('Pendant ton absence : +'+f(g)+' pièces'),1800)}
  const today=new Date().toDateString();if(S.day!==today){S.stk=(new Date(Date.now()-864e5).toDateString()===S.day)?(S.stk||0)+1:1;S.day=today;const d=Math.max(cps()*600,1000)*Math.min(S.stk,7);add(d);setTimeout(()=>toast('Bonus du jour (série de '+S.stk+') : +'+f(d)+' pièces 🎁'),3200)}
  if(!S.q||S.q.length<3)S.q=[newQ(),newQ(),newQ()];coin.textContent=S.cur;$('admb').hidden=!S.adm;render();stats()}
 function enter(n,key,rem,mig,guest){acct=n;SK=guest?'piece-dor-v1':'piece-dor-v1:'+key;let d=null;try{d=JSON.parse(localStorage.getItem(SK))}catch(e){}
@@ -281,6 +290,30 @@ function showAuth(mode){const a=$('auth');let last='';try{last=localStorage.getI
  setTimeout(()=>{const i=$('au');if(i)i.focus()},50)}
 function bootAuth(){let k=null;try{k=localStorage.getItem('pd-auto')}catch(e){}const acc=ACC();if(k&&acc[k])enter(acc[k].n,k,true);else showAuth('in')}
 $('lo').onclick=()=>{save();acct=null;S=def();admIn=false;try{localStorage.removeItem('pd-auto')}catch(e){}$('lo').hidden=true;$('who').textContent='Pièce d’or';coin.textContent='🪙';render();stats();showAuth('in')};
+GENS.forEach(g=>{g.b=Math.round(g.b*3)});
+UPS.forEach(u=>{if(u.t!=='lucky'){u.m=+Math.pow(u.m,.55).toFixed(2);u.d=({click:'Clic',cps:'Auto',all:'Tout'})[u.t]+' ×'+String(u.m).replace('.',',')}});
+PETS.forEach(p=>{if(p.t!=='lucky'){p.m=+(1+(p.m-1)*.5).toFixed(2);p.d=({click:'Clic',cps:'Production',all:'Tout'})[p.t]+' ×'+String(p.m).replace('.',',')}});
+const pc=b=>l=>Math.ceil(b*(l+1)*3*Math.pow(1.5,l));
+P.push({id:'x',e:'🧪',n:'Alchimie avancée',d:'+10 % de gains globaux',cost:pc(6),max:20},{id:'q',e:'📜',n:'Quêtes juteuses',d:'+50 % de récompenses de quêtes',cost:pc(4),max:10},{id:'b',e:'🛡️',n:'Talisman anti-malédiction',d:'La malédiction ralentit moins',cost:pc(5),max:7},{id:'k',e:'🏦',n:'Coffre-fort',d:'Garde 2 % de tes pièces à chaque rebirth',cost:pc(8),max:10});
+addEventListener('keydown',e=>{if(e.key==='Escape')$('adm').hidden=true});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)save()});
+let admTab=0;
+const admSt=()=>'Pièces : '+f(S.m)+' · '+f(cps())+' /s · Rebirths : '+S.rb+' · 💠 '+S.rp;
+const ADM=[['💰 Pièces','Gère ton argent. Entre un nombre N ci-dessous, puis clique sur une action.',[['give','Donner','Ajoute N pièces'],['setm','Fixer','Met tes pièces exactement à N'],['mul','Multiplier','Multiplie tes pièces par N'],['clr','Vider','Remet l’argent à 0'],['inf','Argent infini','Active ou coupe l’argent illimité'],['time','Voyage temporel','Gagne N secondes de production d’un coup']]],
+['⚙️ Production','Règle la vitesse du jeu et les gains.',[['am','Multiplicateur global','Tous les gains ×N en permanence (1 = normal)'],['spd','Vitesse du jeu','Le temps s’écoule ×N plus vite'],['acl','Auto-clics','N clics automatiques par seconde'],['boost','Boost 5 min','Production ×N pendant 5 minutes'],['cf','Frénésie de clics','Clic ×20 pendant 1 minute'],['cc','Critiques','Fixe la chance de critique à N %'],['cls','Annuler les boosts','Retire boosts, frénésie et malédiction']]],
+['🏗️ Bâtiments','Choisis un bâtiment dans la liste, puis agis dessus avec N.',[['sgive','Donner N','Ajoute N exemplaires du bâtiment choisi'],['sset','Fixer à N','Met le bâtiment choisi à N exemplaires'],['sclr','Tout retirer','Supprime tous tes bâtiments'],['gens','+N de chaque','Ajoute N exemplaires de chaque bâtiment']]],
+['🚀 Progression','Niveaux, rebirths et déblocages.',[['fing','Niveaux de doigt','Ajoute N niveaux de « meilleur doigt »'],['rp','Donner des 💠','Ajoute N points de rebirth'],['rbs','Fixer les rebirths','Met ton nombre de rebirths à N'],['rbf','Rebirth forcé','Fait N rebirths sans condition'],['all','Tout débloquer','Boosts, effets, skins et succès'],['lock','Tout verrouiller','Retire boosts, effets et skins'],['ach','Tous les succès','Débloque tous les succès'],['skin','Équiper un skin','Débloque et équipe le skin choisi'],['pets','Tous les familiers','Débloque tous les familiers'],['qdone','Finir les quêtes','Rend les 3 quêtes réclamables'],['codes','Réinitialiser les codes','Les codes redeviennent utilisables']]],
+['✨ Événements','Déclenche des événements à la demande.',[['gold','Pièce dorée 🌟','Fait apparaître une pièce dorée'],['skull','Malédiction ☠️','Production ÷3 pendant 20 secondes']]],
+['🔐 Compte','Mot de passe, codes personnalisés et sauvegarde.',[['pw','Changer le mot de passe','Utilise le champ ci-dessous'],['out','Se déconnecter','Ferme et verrouille le panneau'],['mk','Créer un code','Nom ci-dessous, valeur = N'],['exp','Exporter','Copie ta sauvegarde en texte'],['imp','Importer','Charge une sauvegarde collée'],['wipe','Tout effacer','Supprime la sauvegarde du compte']]]];
+function openAdminPanel(){const a=$('adm'),v=$('ax')?$('ax').value:'1000000',s=ADM[admTab];a.hidden=false;
+ a.firstElementChild.innerHTML=`<h2>🛠️ Panneau admin</h2><div id='ast'>${admSt()}</div><div class='tabs'>${ADM.map((x,i)=>`<button data-at='${i}' class='${i===admTab?'on':''}'>${x[0]}</button>`).join('')}</div><div class='box'>${s[1]}</div><label class='rates' for='ax'>Valeur N (1e9 = un milliard)</label><input id='ax' inputmode='decimal' value='${v}'><div class='chips'>${['10','100','1e3','1e6','1e9','1e12','1e15','1e21'].map(n=>`<button data-n='${n}'>${n}</button>`).join('')}</div>`+
+ (admTab===2?`<select id='as' aria-label='Bâtiment'>${GENS.map(g=>`<option value='${g.id}'>${g.e} ${g.n}</option>`).join('')}</select>`:'')+
+ (admTab===3?`<select id='ak' aria-label='Skin'>${SKINS.map(k=>`<option value='${k.id}'>${k.id} ${k.n}</option>`).join('')}</select>`:'')+
+ `<div class='g'>${s[2].map(x=>`<button data-a='${x[0]}'><b>${x[1]}</b><small>${x[2]}</small></button>`).join('')}</div>`+
+ (admTab===5?`<input id='np' type='password' placeholder='Nouveau mot de passe' autocomplete='new-password'><input id='ac' placeholder='Nom du code personnalisé'><textarea id='ad' rows='3' placeholder='Sauvegarde exportée / à importer'></textarea><div class='rates'>Journal : ${admLog.slice(0,6).join(' · ')}</div>`:'')+
+ `<button data-a='close' style='width:100%'>Fermer</button>`;
+ a.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>{admTab=+b.dataset.at;openAdminPanel()});
+ a.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{$('ax').value=b.dataset.n})}
 const stage=$('stage');
 function spawn(txt,x,y,cls,css){const e=document.createElement('div');e.className=cls;e.textContent=txt;e.style.left=x+'px';e.style.top=y+'px';if(css)for(const k in css)e.style.setProperty(k,css[k]);stage.appendChild(e);setTimeout(()=>e.remove(),2600)}
 function click(ev){
@@ -299,6 +332,14 @@ function click(ev){
  if(S.fx.f16)stage.animate([{boxShadow:'inset 0 0 70px gold'},{boxShadow:'inset 0 0 0 transparent'}],{duration:400});
  if(S.fx.f18)burst(['🦋','🌸'],5);
  if(S.fx.f20)burst(['💫','⭐','🌀'],10);
+ if(S.fx.f21)burst(['🎈','🎀'],4);
+ if(S.fx.f22)burst(['🧊','❄️','💧'],6);
+ if(S.fx.f23)coin.animate([{filter:'hue-rotate(0deg) brightness(1)'},{filter:'hue-rotate(360deg) brightness(1.4)'}],{duration:220});
+ if(S.fx.f24)burst(['🌊','🐚','💧'],7);
+ if(S.fx.f25)burst(['👻','🎃','🦇'],6);
+ if(S.fx.f26)burst(['🌋','🔥','🪨'],8);
+ if(S.fx.f27)burst(['🪐','☄️','🌙','🛰️'],8);
+ if(S.fx.f28){burst(['⛈️','⚡','🌪️'],8);stage.animate([{transform:'translate(0,0)'},{transform:'translate(-7px,3px)'},{transform:'translate(7px,-3px)'},{transform:'translate(0,0)'}],{duration:200})}
  if(S.fx.f12)burst(['🐱','😺','🐾'],6);
  if(S.fx.f13)burst(['⚡','🌩️'],6);
  if(S.fx.f8)coin.animate([{filter:'hue-rotate(0deg)'},{filter:'hue-rotate(360deg)'}],{duration:450});
